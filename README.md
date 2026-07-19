@@ -40,6 +40,55 @@ ntk net ping google.com
 ntk util calc "2*(3+4)"
 ```
 
+## Quick Start — install, use, update
+
+A 60-second guide. Pick your platform, then just use `ntk`.
+
+### 1. Install
+
+**Windows 10 / 11** — download **`ntk-installer.exe`** from the [latest release](../../releases),
+run it (approve the UAC/Admin prompt), then **open a NEW terminal**. Done.
+The installer puts `ntk` on your system PATH (CMD **and** PowerShell) + Registry, and
+drops **`ntk-updater.exe`** next to it so you can update later.
+
+**Linux** — download the `ntk` binary, then:
+```bash
+chmod +x ntk && sudo mv ntk /usr/local/bin/
+```
+
+> 💡 On Windows, if `ntk` seems "not found" right after installing, your terminal was
+> open **before** the install. Just open a **fresh** CMD/PowerShell window — the PATH is
+> set system-wide, so `ntk` then works from any folder.
+
+### 2. Use it
+
+```bash
+ntk                       # banner + all 15 categories
+ntk --help                # help
+ntk sys                   # list every tool in the 'sys' category
+ntk sys info              # run a tool (space form)
+ntk-sys-info              # exact same thing (hyphen form)
+ntk-crypto-password 24    # tools take parameters right after the name
+ntk net ping google.com
+ntk <cat> <tool> -h       # per-tool help
+```
+
+### 3. Keep it up to date
+
+Whenever a new release ships, just run the updater — it pulls the newest build from
+GitHub and replaces your `ntk` in place (self-elevates on Windows if needed):
+
+```bash
+ntk-updater               # Windows: run it (or double-click ntk-updater.exe)
+./ntk-updater             # Linux
+ntk-updater --force       # re-download & reinstall even if versions match
+```
+
+The updater checks your installed version against the latest GitHub release, downloads
+the right binary for your OS, swaps it in, and confirms the new version. That's it.
+
+---
+
 ## 15 Categories
 
 | Category | What it does | Examples |
