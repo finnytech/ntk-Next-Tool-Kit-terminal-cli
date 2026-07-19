@@ -19,6 +19,7 @@ import subprocess
 APP_NAME = "NTK"
 INSTALL_DIR = os.path.join(os.environ.get("ProgramFiles", r"C:\Program Files"), "NTK")
 EXE_NAME = "ntk.exe"
+UPDATER_NAME = "ntk-updater.exe"  # optional, bundled if present
 
 
 def _c(text, color=""):
@@ -128,6 +129,12 @@ def main():
         dst = os.path.join(INSTALL_DIR, EXE_NAME)
         shutil.copy2(src, dst)
         print(f"[+] Copied {EXE_NAME}")
+
+        # Bundle the updater too, if it was packaged with the installer
+        upd_src = resource_path(UPDATER_NAME)
+        if os.path.exists(upd_src):
+            shutil.copy2(upd_src, os.path.join(INSTALL_DIR, UPDATER_NAME))
+            print(f"[+] Copied {UPDATER_NAME} (run 'ntk-updater' to update later)")
 
         print("[*] Updating SYSTEM PATH (CMD + PowerShell)...")
         added = add_to_system_path(INSTALL_DIR)

@@ -1,28 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
-# PyInstaller spec for the NTK installer .exe (Windows, UAC admin, onefile).
+# PyInstaller spec for the NTK updater .exe / binary (Windows + Linux).
 import os
 
 block_cipher = None
-
-# Spec is invoked from the project root; SPECPATH is .../installer
 ROOT = os.path.dirname(SPECPATH)
-# Payload: the already-built ntk.exe (expected at <root>/dist/ntk.exe).
-payload = os.path.join(ROOT, 'dist', 'ntk.exe')
-updater = os.path.join(ROOT, 'dist', 'ntk-updater.exe')
 icon_path = os.path.join(ROOT, 'assets', 'ntk.ico')
 
-datas = []
-if os.path.exists(payload):
-    datas.append((payload, '.'))
-if os.path.exists(updater):
-    datas.append((updater, '.'))
-
 a = Analysis(
-    [os.path.join(SPECPATH, 'ntk_installer.py')],
+    [os.path.join(SPECPATH, 'ntk_updater.py')],
     pathex=[ROOT],
     binaries=[],
-    datas=datas,
-    hiddenimports=['winreg'],
+    datas=[],
+    hiddenimports=[],
     hookspath=[],
     runtime_hooks=[],
     excludes=['tkinter', 'test', 'unittest', 'PIL', 'numpy'],
@@ -39,7 +28,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='ntk-installer',
+    name='ntk-updater',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -52,6 +41,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    uac_admin=True,
     icon=icon_path if os.path.exists(icon_path) else None,
 )
