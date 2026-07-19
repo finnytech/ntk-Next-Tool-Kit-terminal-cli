@@ -36,6 +36,9 @@ BANNER = r"""
 """
 
 
+ISSUES_URL = "https://github.com/finnytech/ntk-Next-Tool-Kit-terminal-cli/issues"
+
+
 def _load(cat):
     mod_name = CATEGORIES[cat][0]
     return importlib.import_module(f".{mod_name}", package="ntk")
@@ -117,14 +120,49 @@ def dispatch(argv):
         return 2
 
     fn = cmds[tool]
+
+    # Centralized per-tool help: intercept -h/--help BEFORE the tool tries to
+    # parse it as an argument (prevents ugly 'invalid literal'/'unknown url' errors).
+    if rest and rest[0] in ("-h", "--help"):
+        doc = (fn.__doc__ or "").strip()
+        desc = doc.splitlines()[0] if doc else ""
+        util.header(f"ntk {cat} {tool}")
+        if desc:
+            print("  " + desc)
+        if len(doc.splitlines()) > 1:
+            print()
+            print("\n".join("  " + ln for ln in doc.splitlines()[1:]))
+        print()
+        print(col(f"Usage: ntk {cat} {tool} [args...]   (or: ntk-{cat}-{tool} ...)", C.DIM))
+        return 0
+
     try:
         rc = fn(rest)
         return rc if isinstance(rc, int) else 0
     except KeyboardInterrupt:
         print()
         return 130
-    except Exception as e:
+    except (EOFError, BrokenPipeError):
+        return 0
+    except (FileNotFoundError, IsADirectoryError, NotADirectoryError) as e:
+        util.err(f"{cat} {tool}: file/path not found or invalid: {getattr(e, 'filename', e)}")
+        print(col(f"Try: ntk {cat} {tool} -h", C.DIM))
+        return 1
+    except PermissionError as e:
+        util.err(f"{cat} {tool}: permission denied: {getattr(e, 'filename', e)}")
+        print(col("Tip: run the terminal as Administrator/root if this needs elevated access.", C.DIM))
+        return 1
+    except (ValueError, TypeError) as e:
+        util.err(f"{cat} {tool}: invalid argument: {e}")
+        print(col(f"Try: ntk {cat} {tool} -h", C.DIM))
+        return 2
+    except (OSError,) as e:
+        # network/socket/address errors, ports in use, etc.
         util.err(f"{cat} {tool}: {e}")
+        return 1
+    except Exception as e:
+        util.err(f"{cat} {tool}: {type(e).__name__}: {e}")
+        print(col(f"This looks like a bug. Please report it: {ISSUES_URL}", C.DIM))
         return 1
 
 
@@ -150,5 +188,19 @@ def _expand_hyphen_form(argv):
 def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
-    argv = _expand_hyphen_form(argv)
-    return dispatch(argv)
+    try:
+        argv = _expand_hyphen_form(argv)
+        return dispatch(argv)
+    except KeyboardInterrupt:
+        print()
+        return 130
+    except (BrokenPipeError, EOFError):
+        return 0
+    except Exception as e:
+        # Absolute last line of defense: never show a raw traceback to a user.
+        try:
+            util.err(f"unexpected error: {type(e).__name__}: {e}")
+            print(col(f"Please report this: {ISSUES_URL}", C.DIM))
+        except Exception:
+            sys.stderr.write(f"ntk: unexpected error: {e}\n")
+        return 1
