@@ -18,6 +18,26 @@ Standalone executable — no Python, no Node.js, nothing to install.
 
 ---
 
+## ⚠️ Disclaimer — please read
+
+NTK is **beta software provided "as is", without any warranty** (see [`LICENSE`](LICENSE)).
+
+- **Errors can and will happen.** Some tools wrap external programs (docker, aws, ffmpeg, git, …)
+  or need network access, elevated privileges, or a real terminal. If something is missing
+  or unavailable, NTK prints a clear error and exits — it should **never** dump a raw crash,
+  but bugs are still possible in a beta.
+- **Use at your own risk.** Some tools modify files, processes, services, or system settings
+  (e.g. `sys kill`, `file shred`, `sys shutdown`). Double-check arguments before running
+  destructive commands. The author is **not liable** for any data loss or damage.
+- **Not a security product.** The `sec`/`crypto` helpers are convenience utilities, not audited
+  security tooling. Don't rely on them for anything critical.
+- **Found a bug?** Please open an issue:
+  [github.com/finnytech/ntk-Next-Tool-Kit-terminal-cli/issues](https://github.com/finnytech/ntk-Next-Tool-Kit-terminal-cli/issues)
+
+Every command supports `-h` for usage help, e.g. `ntk sys kill -h`.
+
+---
+
 ## What is NTK?
 
 NTK bundles **300+ practical command-line tools** into a single, fast, self-contained
