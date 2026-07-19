@@ -1,30 +1,21 @@
 # -*- mode: python ; coding: utf-8 -*-
-# PyInstaller spec for the NTK installer .exe (Windows, UAC admin, onefile).
+# PyInstaller spec for the NTK Manager (small local web-UI launcher).
 import os
 
 block_cipher = None
-
-# Spec is invoked from the project root; SPECPATH is .../installer
 ROOT = os.path.dirname(SPECPATH)
-# Payload: the already-built ntk.exe (expected at <root>/dist/ntk.exe).
 icon_path = os.path.join(ROOT, 'assets', 'ntk.ico')
 
-# Bundle every built companion binary that exists.
-datas = []
-for _f in ('ntk.exe', 'ntk-updater.exe', 'ntk-manager.exe', 'ntk-uninstall.exe'):
-    _p = os.path.join(ROOT, 'dist', _f)
-    if os.path.exists(_p):
-        datas.append((_p, '.'))
-
 a = Analysis(
-    [os.path.join(SPECPATH, 'ntk_installer.py')],
+    [os.path.join(SPECPATH, 'ntk_manage.py')],
     pathex=[ROOT],
     binaries=[],
-    datas=datas,
-    hiddenimports=['winreg'],
+    datas=([(os.path.join(SPECPATH, 'catalog.json'), '.')]
+           if os.path.exists(os.path.join(SPECPATH, 'catalog.json')) else []),
+    hiddenimports=[],
     hookspath=[],
     runtime_hooks=[],
-    excludes=['tkinter', 'test', 'unittest', 'PIL', 'numpy'],
+    excludes=['tkinter', 'test', 'unittest', 'PIL', 'numpy', 'pandas', 'scipy'],
     cipher=block_cipher,
     noarchive=False,
 )
@@ -38,7 +29,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='ntk-installer',
+    name='ntk-manager',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -51,6 +42,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    uac_admin=True,
     icon=icon_path if os.path.exists(icon_path) else None,
 )

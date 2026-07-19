@@ -19,7 +19,8 @@ import subprocess
 APP_NAME = "NTK"
 INSTALL_DIR = os.path.join(os.environ.get("ProgramFiles", r"C:\Program Files"), "NTK")
 EXE_NAME = "ntk.exe"
-UPDATER_NAME = "ntk-updater.exe"  # optional, bundled if present
+# Optional companions, installed alongside ntk.exe if bundled.
+COMPANIONS = ["ntk-updater.exe", "ntk-manager.exe", "ntk-uninstall.exe"]
 
 
 def _c(text, color=""):
@@ -90,7 +91,7 @@ def register_app(exe_path):
     un = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\NTK"
     with winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE, un) as k:
         winreg.SetValueEx(k, "DisplayName", 0, winreg.REG_SZ, "NTK - Next Tool Kit")
-        winreg.SetValueEx(k, "DisplayVersion", 0, winreg.REG_SZ, "1.0.0")
+        winreg.SetValueEx(k, "DisplayVersion", 0, winreg.REG_SZ, "2.0.0")
         winreg.SetValueEx(k, "Publisher", 0, winreg.REG_SZ, "finnytech")
         winreg.SetValueEx(k, "InstallLocation", 0, winreg.REG_SZ, os.path.dirname(exe_path))
         winreg.SetValueEx(k, "DisplayIcon", 0, winreg.REG_SZ, exe_path)
@@ -100,12 +101,12 @@ def register_app(exe_path):
     pr = r"SOFTWARE\NTK"
     with winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE, pr) as k:
         winreg.SetValueEx(k, "InstallDir", 0, winreg.REG_SZ, os.path.dirname(exe_path))
-        winreg.SetValueEx(k, "Version", 0, winreg.REG_SZ, "1.0.0")
+        winreg.SetValueEx(k, "Version", 0, winreg.REG_SZ, "2.0.0")
 
 
 def main():
     print("=" * 52)
-    print("   NTK - Next Tool Kit  |  Installer v1.0.0")
+    print("   NTK - Next Tool Kit  |  Installer v2.0.0")
     print("=" * 52)
     print()
 
@@ -130,11 +131,12 @@ def main():
         shutil.copy2(src, dst)
         print(f"[+] Copied {EXE_NAME}")
 
-        # Bundle the updater too, if it was packaged with the installer
-        upd_src = resource_path(UPDATER_NAME)
-        if os.path.exists(upd_src):
-            shutil.copy2(upd_src, os.path.join(INSTALL_DIR, UPDATER_NAME))
-            print(f"[+] Copied {UPDATER_NAME} (run 'ntk-updater' to update later)")
+        # Bundle companions (updater, manager, uninstaller) if packaged.
+        for comp in COMPANIONS:
+            comp_src = resource_path(comp)
+            if os.path.exists(comp_src):
+                shutil.copy2(comp_src, os.path.join(INSTALL_DIR, comp))
+                print(f"[+] Copied {comp}")
 
         print("[*] Updating SYSTEM PATH (CMD + PowerShell)...")
         added = add_to_system_path(INSTALL_DIR)

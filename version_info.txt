@@ -1,8 +1,8 @@
 # UTF-8 Windows version resource for ntk.exe
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 0, 0, 0),
-    prodvers=(1, 0, 0, 0),
+    filevers=(2, 0, 0, 0),
+    prodvers=(2, 0, 0, 0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -18,12 +18,12 @@ VSVersionInfo(
           [
             StringStruct('CompanyName', 'finnytech'),
             StringStruct('FileDescription', 'NTK - Next Tool Kit CLI (300+ terminal tools)'),
-            StringStruct('FileVersion', '1.0.0'),
+            StringStruct('FileVersion', '2.0.0'),
             StringStruct('InternalName', 'ntk'),
             StringStruct('LegalCopyright', 'MIT License'),
             StringStruct('OriginalFilename', 'ntk.exe'),
             StringStruct('ProductName', 'NTK Next Tool Kit'),
-            StringStruct('ProductVersion', '1.0.0')
+            StringStruct('ProductVersion', '2.0.0')
           ]
         )
       ]

@@ -5,12 +5,15 @@ import os
 block_cipher = None
 
 # All category modules are imported dynamically via importlib -> must be hidden imports.
-hidden = [
-    'ntk', 'ntk.router', 'ntk.util',
-    'ntk.cmd_sys', 'ntk.cmd_net', 'ntk.cmd_file', 'ntk.cmd_text',
-    'ntk.cmd_crypto', 'ntk.cmd_dev', 'ntk.cmd_auto', 'ntk.cmd_docker',
-    'ntk.cmd_db', 'ntk.cmd_web', 'ntk.cmd_media', 'ntk.cmd_ai',
-    'ntk.cmd_sec', 'ntk.cmd_cloud', 'ntk.cmd_util',
+# v2.0: 33 universal category modules, all lazy-loaded via importlib.
+_v2 = [
+    'system', 'performance', 'network', 'file', 'text', 'data', 'crypto',
+    'security', 'dev', 'git', 'web', 'media', 'docker', 'cloud', 'database',
+    'math', 'time', 'convert', 'generate', 'monitor', 'benchmark', 'disk',
+    'process', 'search', 'archive', 'image', 'audio', 'code', 'api', 'os',
+    'hardware', 'productivity', 'admin',
+]
+hidden = ['ntk', 'ntk.router', 'ntk.util'] + [f'ntk.v2_{c}' for c in _v2] + [
     # common optional deps that may be present
     'psutil',
 ]

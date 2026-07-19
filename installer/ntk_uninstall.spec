@@ -1,27 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
-# PyInstaller spec for the NTK installer .exe (Windows, UAC admin, onefile).
+# PyInstaller spec for the NTK uninstaller (Windows UAC admin + Linux).
 import os
 
 block_cipher = None
-
-# Spec is invoked from the project root; SPECPATH is .../installer
 ROOT = os.path.dirname(SPECPATH)
-# Payload: the already-built ntk.exe (expected at <root>/dist/ntk.exe).
 icon_path = os.path.join(ROOT, 'assets', 'ntk.ico')
 
-# Bundle every built companion binary that exists.
-datas = []
-for _f in ('ntk.exe', 'ntk-updater.exe', 'ntk-manager.exe', 'ntk-uninstall.exe'):
-    _p = os.path.join(ROOT, 'dist', _f)
-    if os.path.exists(_p):
-        datas.append((_p, '.'))
-
 a = Analysis(
-    [os.path.join(SPECPATH, 'ntk_installer.py')],
+    [os.path.join(SPECPATH, 'ntk_uninstall.py')],
     pathex=[ROOT],
     binaries=[],
-    datas=datas,
-    hiddenimports=['winreg'],
+    datas=[],
+    hiddenimports=[],
     hookspath=[],
     runtime_hooks=[],
     excludes=['tkinter', 'test', 'unittest', 'PIL', 'numpy'],
@@ -38,7 +28,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='ntk-installer',
+    name='ntk-uninstall',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
