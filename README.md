@@ -132,6 +132,10 @@ the right binary for your OS, swaps it in, and confirms the new version. That's 
 Run `ntk` or `ntk --help` for the banner, `ntk <category>` to list a category's tools,
 and `ntk <category> <tool> -h` for per-tool help.
 
+📖 **Full reference:** every single command — on Windows **and** Linux, with all
+parameters, options and platform notes — is documented in the
+**[Command Handbook → `COMMANDS.md`](COMMANDS.md)**.
+
 ## Install
 
 ### Windows 10 / 11
