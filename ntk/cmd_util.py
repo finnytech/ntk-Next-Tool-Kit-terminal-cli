@@ -87,17 +87,41 @@ def unit(args):
 
 
 def timer(args):
-    """Simple stopwatch (Ctrl+C to stop, Enter for lap)."""
+    """Simple stopwatch (Ctrl+C to stop, Enter for lap). Countdown: ntk util timer 30"""
+    # Countdown mode when a number of seconds is given.
+    if args:
+        try:
+            secs = int(args[0])
+        except ValueError:
+            util.err("usage: ntk util timer [seconds]")
+            return 2
+        util.info(f"Counting down {secs}s (Ctrl+C to cancel)...")
+        try:
+            for r in range(secs, 0, -1):
+                sys.stdout.write(f"\r  {r:>4}s remaining ")
+                sys.stdout.flush()
+                time.sleep(1)
+            print("\r  Time's up!            ")
+        except KeyboardInterrupt:
+            print("\n  cancelled.")
+        return 0
+    # Interactive stopwatch requires a TTY; bail out cleanly if piped/no terminal.
+    if not sys.stdin or not sys.stdin.isatty():
+        util.err("stopwatch needs an interactive terminal. Use: ntk util timer <seconds> for a countdown.")
+        return 2
     util.info("Stopwatch started. Press Enter for lap, Ctrl+C to stop.")
     start = time.time()
     lap = 0
     try:
         while True:
-            sys.stdin.readline()
+            line = sys.stdin.readline()
+            if line == "":  # EOF
+                break
             lap += 1
             print(f"  Lap {lap}: {time.time()-start:.2f}s")
     except KeyboardInterrupt:
-        print(f"\n  Total: {time.time()-start:.2f}s")
+        pass
+    print(f"\n  Total: {time.time()-start:.2f}s")
     return 0
 
 
@@ -179,6 +203,9 @@ def clipboard_history(args):
 
 def keyboard_test(args):
     """Show terminal keycodes for pressed keys (Ctrl+C to exit)."""
+    if not sys.stdin or not sys.stdin.isatty():
+        util.err("keyboard-test needs an interactive terminal (TTY).")
+        return 2
     util.info("Press keys to see codes. Ctrl+C to exit.")
     try:
         if IS_WINDOWS:
